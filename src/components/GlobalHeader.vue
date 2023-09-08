@@ -1,11 +1,16 @@
 <template>
   <div id="globalHeader">
-    <t-head-menu :default-value="active">
+    <t-head-menu v-model="active">
       <template #logo>
-        <img height="36" :src="codeLogo" alt="logo" />
+        <component :is="codeLogo" class="headerLogo"></component>
         <span class="logoTitle">Bin OJ</span>
       </template>
-      <t-menu-item v-for="item in routes" :value="item.path" :to="item.path" :key="item.name">
+      <t-menu-item
+        v-for="item in visibleRoutes"
+        :value="item.path"
+        :to="item.path"
+        :key="item.name"
+      >
         {{ item.meta.title }}
       </t-menu-item>
       <template #operations>
@@ -21,52 +26,89 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import routes from '@/router/routes'
-import { useRoute } from 'vue-router'
-import codeLogo from '@/assets/code.svg'
+import { useRouter } from 'vue-router'
+import checkAccess from '@/access/checkAccess'
+import codeLogo from '@/assets/code.svg?component'
 import { useUserInfoStore } from '@/stores/user'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { ChevronDownIcon } from 'tdesign-icons-vue-next'
+import { UserControllerService } from '@/api'
+import ACCESS_ENUM from '@/access/accessEnum'
 
 // 激活路由
-const route = useRoute()
-const active = ref('')
-// 在挂载时赋值
-onMounted(() => {
-  active.value = route.path
+const router = useRouter()
+const active = computed(() => {
+  return router.currentRoute.value.path
 })
-// 使用watch监听路由变化
-watch(
-  () => route.path,
-  (newPath, oldPath) => {
-      if (newPath !== oldPath) {
-      active.value = newPath
-    }
-  },
-  { immediate: true }
-)
 
 // 下拉菜单项
-const options = [
+const options = ref([
   {
-    content: '个人中心',
+    content: '登录',
     value: 1,
-    onClick: () => MessagePlugin.success('个人中心')
-  },
-  {
-    content: '退出登录',
-    value: 2,
-    onClick: () => MessagePlugin.success('退出登录')
+    onClick: () => toLogin()
   }
-]
+])
 const userInfoStore = useUserInfoStore()
+
+// 挂载时判断是否登录，加载下拉菜单项
+const loadOptions = () => {
+  if (userInfoStore.loginUser.userRole !== ACCESS_ENUM.NOT_LOGIN) {
+    options.value = [
+      {
+        content: '个人中心',
+        value: 1,
+        onClick: () => MessagePlugin.success('个人中心')
+      },
+      {
+        content: '退出登录',
+        value: 2,
+        onClick: () => userLogout()
+      }
+    ]
+  }
+}
+onMounted(() => {
+  loadOptions()
+})
+
+// 显示在菜单中的路由数据
+const visibleRoutes = computed(() => {
+  return routes.filter((item) => {
+    if (item.meta?.isHidden) {
+      return false
+    }
+    if (!checkAccess(userInfoStore.getLoginUser(), item?.meta?.access as string)) {
+      return false
+    }
+    return true
+  })
+})
+// to登录页
+const toLogin = () => {
+  router.push('/user/login')
+}
+// 退出登录
+const userLogout = async () => {
+  const res = await UserControllerService.userLogoutUsingPost()
+  if (res.code === 0) {
+    MessagePlugin.success('退出登录成功')
+  } else {
+    MessagePlugin.error(res.message)
+  }
+}
 </script>
 
 <style scoped>
 #globalHeader {
   margin: 0;
   padding: 0;
+}
+.headerLogo {
+  height: 34px;
+  width: 34px;
 }
 #globalHeader .t-head-menu {
   padding-left: 40px;

@@ -1,24 +1,27 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import BasicLayout from '@/layouts/BasicLayout.vue'
-import { useRouter } from 'vue-router'
-import { useUserInfoStore } from '@/stores/user'
 
-const router = useRouter()
-router.beforeEach((to, from, next) => {
-  // 仅管理员可见
-  if (to.meta?.access === 'canAdmin') {
-    const userInfoStore = useUserInfoStore()
-    if (userInfoStore.getLoginUser()?.role !== 'admin') {
-      next("/noAuth")
-      return
-    }
-  }
-  next()
+const route = useRoute()
+
+// 全局初始化函数，有单次调用的方法都可以写在这里
+const doInit = () => {
+  console.log('Hello 欢迎来到Bin OJ系统')
+}
+onMounted(() => {
+  doInit()
 })
 </script>
 
 <template>
-  <BasicLayout />
+  <template v-if="route.path.startsWith('/user')">
+    <router-view />
+  </template>
+  <template v-else>
+    <BasicLayout />
+  </template>
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>

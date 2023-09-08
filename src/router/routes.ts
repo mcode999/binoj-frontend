@@ -1,9 +1,30 @@
 import { RouteRecordRaw } from 'vue-router'
 const routes: Array<RouteRecordRaw> = [
   {
+    path: '/user',
+    name: 'User',
+    component: () => import('@/layouts/UserLayout.vue'),
+    children: [
+      {
+        path: '/user/login',
+        name: '用户登录',
+        component: () => import('@/views/user/UserLogin.vue')
+      },
+      {
+        path: '/user/register',
+        name: '用户注册',
+        component: () => import('@/views/user/UserRegister.vue')
+      }
+    ],
+    meta: {
+      title:'用户',
+      isHidden: true
+    }
+  },
+  {
     path: '/',
     name: 'Home',
-    component: () => import('@/views/home.vue'),
+    component: () => import('@/views/Home.vue'),
     meta: {
       title: '浏览题目'
     }
@@ -11,7 +32,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/about',
     name: 'About',
-    component: () => import('@/views/about.vue'),
+    component: () => import('@/views/About.vue'),
     meta: {
       title: '关于我的'
     }
@@ -19,9 +40,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/noAuth',
     name: 'NoAuth',
-    component: () => import('@/views/noAuth.vue'),
+    component: () => import('@/views/NoAuth.vue'),
     meta: {
-      title: '未登录'
+      title: '未登录',
+      isHidden: true
     }
   },
   {
@@ -29,8 +51,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Admin',
     component: () => import('@/views/Admin.vue'),
     meta: {
-      title: '管理',
-      access: 'canAdmin'
+      title: '管理员可见',
+      access: 'admin'
     }
   }
 ]

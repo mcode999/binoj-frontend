@@ -5,11 +5,15 @@ import GlobalHeader from '@/components/GlobalHeader.vue'
 
 <template>
   <div id="basicLayout">
-    <t-layout style="height: 400px">
-      <t-header class="header">
-        <global-header />
-      </t-header>
-      <t-content class="content"> <router-view /></t-content>
+    <t-layout direction="vertical">
+      <t-affix ref="affix">
+        <t-header class="header">
+          <global-header />
+        </t-header>
+      </t-affix>
+      <t-content class="content">
+        <router-view />
+      </t-content>
       <t-footer class="footer">
         <a href="www.rsbin.top" target="_blank">RsBin的OJ判题系统项目</a>
       </t-footer>
@@ -19,15 +23,19 @@ import GlobalHeader from '@/components/GlobalHeader.vue'
 
 <style scoped>
 #basicLayout {
-  padding: 0;
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
+
 #basicLayout .header {
   height: 60px;
 }
 
 #basicLayout .content {
-  background: radial-gradient(
+  flex-grow: 1;
+  height: 100%;
+  /* background: radial-gradient(
       ellipse farthest-side at 76% 77%,
       rgba(245, 228, 212, 0.25) 4%,
       rgba(255, 255, 255, 0) calc(4% + 1px)
@@ -36,16 +44,21 @@ import GlobalHeader from '@/components/GlobalHeader.vue'
     linear-gradient(135deg, #ff0000 0%, #000036 100%),
     radial-gradient(ellipse at 28% 0%, #ffcfac 0%, rgba(98, 149, 144, 0.5) 100%),
     linear-gradient(180deg, #cd6e8a 0%, #f5eab0 69%, #d6c8a2 70%, #a2758d 100%);
-  background-blend-mode: normal, normal, screen, overlay, normal;
+  background-blend-mode: normal, normal, screen, overlay, normal; */
 }
 
 #basicLayout .footer {
   padding: 16px;
-  position: absolute;
+  position: sticky;
   bottom: 0;
   left: 0;
   right: 0;
   text-align: center;
-  background: #c4fcef;
+  background: #ffffff;
+}
+
+a {
+  color: #666;
+  text-decoration: none;
 }
 </style>
