@@ -17,13 +17,19 @@ export const useUserInfoStore = defineStore('userInfo', {
     },
     async getLoginUser() {
       // 从远程请求获取登录信息
-      const res = await UserControllerService.getLoginUserUsingGet()
+      const res= await UserControllerService.getLoginUserUsingGet()
       if (res.code === 0) {
         this.setLoginUser(res.data)
       } else {
         this.loginUser.userRole = ACCESS_ENUM.NOT_LOGIN
       }
       return this.loginUser
+    },
+    clean() {
+      this.loginUser = {
+        userName: '未登录',
+        userRole: ACCESS_ENUM.NOT_LOGIN
+      }
     }
   }
 })

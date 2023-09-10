@@ -95,8 +95,6 @@
 
 <script setup lang="ts">
 
-defineProps({
-})
 </script>
 
 <style scoped>

@@ -1,6 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+
+</script>
 
 <template>
-  <div id="home">管理员</div>
+  <div id="home">
+  </div>
 </template>
-<style scoped></style>
+<style scoped>
+
+</style>

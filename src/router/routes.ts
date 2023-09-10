@@ -1,3 +1,4 @@
+import ACCESS_ENUM from '@/access/accessEnum'
 import { RouteRecordRaw } from 'vue-router'
 const routes: Array<RouteRecordRaw> = [
   {
@@ -17,8 +18,17 @@ const routes: Array<RouteRecordRaw> = [
       }
     ],
     meta: {
-      title:'用户',
+      title: '用户',
       isHidden: true
+    }
+  },
+  {
+    path: '/add/question',
+    name: 'AddQuestion',
+    component: () => import('@/views/question/AddQuestion.vue'),
+    meta: {
+      title: '创建题目',
+      access: ACCESS_ENUM.ADMIN
     }
   },
   {
@@ -38,11 +48,11 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: '/noAuth',
-    name: 'NoAuth',
-    component: () => import('@/views/NoAuth.vue'),
+    path: '/403',
+    name: '403',
+    component: () => import('@/views/result/403.vue'),
     meta: {
-      title: '未登录',
+      title: '403',
       isHidden: true
     }
   },
@@ -52,7 +62,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/Admin.vue'),
     meta: {
       title: '管理员可见',
-      access: 'admin'
+      access: ACCESS_ENUM.ADMIN
     }
   }
 ]

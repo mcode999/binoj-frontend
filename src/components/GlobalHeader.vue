@@ -80,10 +80,9 @@ const visibleRoutes = computed(() => {
     if (item.meta?.isHidden) {
       return false
     }
-    if (!checkAccess(userInfoStore.getLoginUser(), item?.meta?.access as string)) {
-      return false
-    }
-    return true
+    // 根据权限过滤菜单
+    return checkAccess(userInfoStore.loginUser, item?.meta?.access as string);
+
   })
 })
 // to登录页
@@ -94,9 +93,10 @@ const toLogin = () => {
 const userLogout = async () => {
   const res = await UserControllerService.userLogoutUsingPost()
   if (res.code === 0) {
-    MessagePlugin.success('退出登录成功')
+    userInfoStore.clean()
+    await MessagePlugin.success('退出登录成功')
   } else {
-    MessagePlugin.error(res.message)
+    await MessagePlugin.error(res.message)
   }
 }
 </script>
